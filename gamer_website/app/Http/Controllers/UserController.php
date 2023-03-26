@@ -34,9 +34,4 @@ class UserController extends Controller
         ]);
     } 
 
-    public function forgetPassword(Request $request){
-     
-    }
-
-
 }

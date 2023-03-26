@@ -10,9 +10,15 @@ use App\Http\Resources\productResource;
 class ProductController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, 'product');
+    }
+
     public function index()
     {
-        $products=Product::with('category')->with('user')->get();
+        $products=Product::with('Category')->with('user')->get();
+        if(count($products)==0)     return response()->json([ 'message'=>'No Products found!',]);
         return productResource::collection($products);
     }
 
@@ -35,7 +41,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->category;
+        $product->Category;
         $product->user;
         return new productResource($product);
     }

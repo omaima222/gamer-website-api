@@ -10,9 +10,14 @@ use App\Http\Resources\roleResource;
 class RoleController extends Controller
 {
  
+    public function __construct()
+    {
+        $this->authorizeResource(Role::class, 'role');
+    }
+
     public function index()
     {
-        $roles=Role::get();
+        $roles=Role::with('permissions')->get();
         return response()->json([
             'message'=>'All the roles :',
             'Roles'=> roleResource::collection($roles),
@@ -21,7 +26,8 @@ class RoleController extends Controller
   
     public function store(RoleRequest $request)
     {
-        Role::create($request->all());
+        $role=Role::create($request->all());
+        $role->permissions()->attach($request->permission_id);
         return response()->json([
             'message'=>'Role added succesfully',
         ]);
@@ -38,6 +44,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role)
     {
         $role->update($request->all());
+        $role->permissions()->sync($request->permission_id);
         return response()->json([
             'message'=>'Role updated succesfully',
         ]);

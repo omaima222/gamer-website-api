@@ -8,9 +8,12 @@ use App\Http\Resources\categoryResource;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     public function index()
     {
         $categories=Category::all();

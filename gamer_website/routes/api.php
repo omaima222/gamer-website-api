@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ResetPasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,6 +40,22 @@ Route::apiResource('categories', CategoryController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('user', UserController::class);
+Route::apiResource('permissions', PermissionController::class);
 
 Route::get('products/title/{searching}', [ProductController::class, 'searchByTitle']);
 Route::get('products/category/{searching}', [ProductController::class, 'searchByCategory']);
+
+
+
+
+Route::group(['controller' => ResetPasswordController::class], function (){
+
+    Route::post('forgot-password', 'sendResetLinkEmail')->middleware('guest')->name('password.email');
+
+    Route::post('reset-password', 'resetPassword')->middleware('guest')->name('password.update');
+
+    Route::get('reset-password/{token}', function (string $token)
+    {
+         return $token;
+     })->middleware('guest')->name('password.reset');
+});
